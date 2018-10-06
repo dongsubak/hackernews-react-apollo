@@ -1,30 +1,17 @@
-async function feed(parent, args, context, info) {
-  const where = args.filter
-    ? {
-        OR: [
-          { url_contains: args.filter },
-          { description_contains: args.filter },
-        ],
-      }
+async function feed(parent, args, ctx, info) {
+  const { filter, first, skip } = args // destructure input arguments
+  const where = filter
+    ? { OR: [{ url_contains: filter }, { description_contains: filter }] }
     : {}
 
-  const queriedLinkes = await context.db.query.links(
-    { where, skip: args.skip, first: args.first, orderBy: args.orderBy },
-    `{ id }`,
-  )
+  const allLinks = await ctx.db.query.links({})
+  const count = allLinks.length
 
-  const countSelectionSet = `
-    {
-      aggregate {
-        count
-      }
-    }
-  `
-  const linksConnection = await context.db.query.linksConnection({}, countSelectionSet)
+  const queriedLinkes = await ctx.db.query.links({ first, skip, where })
 
   return {
-    count: linksConnection.aggregate.count,
     linkIds: queriedLinkes.map(link => link.id),
+    count
   }
 }
 

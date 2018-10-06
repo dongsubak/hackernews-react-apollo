@@ -1,5 +1,5 @@
-# source: https://eu1.prisma.sh/christian-nwamba-fd2dcf/hackernews-node/dev
-# timestamp: Wed Jun 06 2018 14:46:47 GMT+0100 (WAT)
+# source: https://us1.prisma.sh/likeap/db/dev
+# timestamp: Sat Oct 06 2018 17:13:34 GMT+0900 (대한민국 표준시)
 
 type AggregateLink {
   count: Int!
@@ -25,7 +25,7 @@ type Link implements Node {
   createdAt: DateTime!
   description: String!
   url: String!
-  postedBy(where: UserWhereInput): User
+  postedBy: User
   votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote!]
 }
 
@@ -152,10 +152,9 @@ input LinkUpdateManyWithoutPostedByInput {
   upsert: [LinkUpsertWithWhereUniqueWithoutPostedByInput!]
 }
 
-input LinkUpdateOneWithoutVotesInput {
+input LinkUpdateOneRequiredWithoutVotesInput {
   create: LinkCreateWithoutVotesInput
   connect: LinkWhereUniqueInput
-  delete: Boolean
   update: LinkUpdateWithoutVotesDataInput
   upsert: LinkUpsertWithoutVotesInput
 }
@@ -356,24 +355,24 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
+  createVote(data: VoteCreateInput!): Vote!
   createLink(data: LinkCreateInput!): Link!
   createUser(data: UserCreateInput!): User!
-  createVote(data: VoteCreateInput!): Vote!
+  updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
   updateLink(data: LinkUpdateInput!, where: LinkWhereUniqueInput!): Link
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateVote(data: VoteUpdateInput!, where: VoteWhereUniqueInput!): Vote
+  deleteVote(where: VoteWhereUniqueInput!): Vote
   deleteLink(where: LinkWhereUniqueInput!): Link
   deleteUser(where: UserWhereUniqueInput!): User
-  deleteVote(where: VoteWhereUniqueInput!): Vote
+  upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
   upsertLink(where: LinkWhereUniqueInput!, create: LinkCreateInput!, update: LinkUpdateInput!): Link!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertVote(where: VoteWhereUniqueInput!, create: VoteCreateInput!, update: VoteUpdateInput!): Vote!
+  updateManyVotes(data: VoteUpdateInput!, where: VoteWhereInput): BatchPayload!
   updateManyLinks(data: LinkUpdateInput!, where: LinkWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  updateManyVotes(data: VoteUpdateInput!, where: VoteWhereInput): BatchPayload!
+  deleteManyVotes(where: VoteWhereInput): BatchPayload!
   deleteManyLinks(where: LinkWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyVotes(where: VoteWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -404,15 +403,15 @@ type PageInfo {
 }
 
 type Query {
+  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
   links(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Link]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  votes(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Vote]!
+  vote(where: VoteWhereUniqueInput!): Vote
   link(where: LinkWhereUniqueInput!): Link
   user(where: UserWhereUniqueInput!): User
-  vote(where: VoteWhereUniqueInput!): Vote
+  votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
   linksConnection(where: LinkWhereInput, orderBy: LinkOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): LinkConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  votesConnection(where: VoteWhereInput, orderBy: VoteOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): VoteConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -422,9 +421,9 @@ type Query {
 }
 
 type Subscription {
+  vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
   link(where: LinkSubscriptionWhereInput): LinkSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  vote(where: VoteSubscriptionWhereInput): VoteSubscriptionPayload
 }
 
 type User implements Node {
@@ -556,6 +555,13 @@ input UserUpdateInput {
   votes: VoteUpdateManyWithoutUserInput
 }
 
+input UserUpdateOneRequiredWithoutVotesInput {
+  create: UserCreateWithoutVotesInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutVotesDataInput
+  upsert: UserUpsertWithoutVotesInput
+}
+
 input UserUpdateOneWithoutLinksInput {
   create: UserCreateWithoutLinksInput
   connect: UserWhereUniqueInput
@@ -563,14 +569,6 @@ input UserUpdateOneWithoutLinksInput {
   delete: Boolean
   update: UserUpdateWithoutLinksDataInput
   upsert: UserUpsertWithoutLinksInput
-}
-
-input UserUpdateOneWithoutVotesInput {
-  create: UserCreateWithoutVotesInput
-  connect: UserWhereUniqueInput
-  delete: Boolean
-  update: UserUpdateWithoutVotesDataInput
-  upsert: UserUpsertWithoutVotesInput
 }
 
 input UserUpdateWithoutLinksDataInput {
@@ -781,8 +779,8 @@ input UserWhereUniqueInput {
 
 type Vote implements Node {
   id: ID!
-  link(where: LinkWhereInput): Link!
-  user(where: UserWhereInput): User!
+  link: Link!
+  user: User!
 }
 
 """A connection to a list of items."""
@@ -880,8 +878,8 @@ input VoteSubscriptionWhereInput {
 }
 
 input VoteUpdateInput {
-  link: LinkUpdateOneWithoutVotesInput
-  user: UserUpdateOneWithoutVotesInput
+  link: LinkUpdateOneRequiredWithoutVotesInput
+  user: UserUpdateOneRequiredWithoutVotesInput
 }
 
 input VoteUpdateManyWithoutLinkInput {
@@ -903,11 +901,11 @@ input VoteUpdateManyWithoutUserInput {
 }
 
 input VoteUpdateWithoutLinkDataInput {
-  user: UserUpdateOneWithoutVotesInput
+  user: UserUpdateOneRequiredWithoutVotesInput
 }
 
 input VoteUpdateWithoutUserDataInput {
-  link: LinkUpdateOneWithoutVotesInput
+  link: LinkUpdateOneRequiredWithoutVotesInput
 }
 
 input VoteUpdateWithWhereUniqueWithoutLinkInput {
