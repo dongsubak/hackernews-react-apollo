@@ -32,7 +32,11 @@ class LinkList extends Component {
 
     const votedLink = data.feed.links.find(link => link.id === linkId)
     votedLink.votes = createVote.link.votes
-    store.writeQuery({ query: FEED_QUERY, data })
+    console.log(votedLink)
+    store.writeQuery({
+      query: FEED_QUERY, 
+      data 
+    })
   }
   render() {
     return (
@@ -44,7 +48,12 @@ class LinkList extends Component {
           const linksToRender = data.feed.links
           return (
             <div>
-              {linksToRender.map((link, index) => (<Link key={link.id} link={link} index={index} updateCacheAfterVote={this._updateCacheAfterVote} />))}
+              {linksToRender.map((link, index) => (
+              <Link 
+                key={link.id} 
+                link={link} 
+                index={index} 
+                updateStoreAfterVote={this._updateCacheAfterVote} />))}
             </div> 
           )
           }
