@@ -44,8 +44,6 @@ const wsClient = new SubscriptionClient({
 const wsLink = new WebSocketLink(wsClient);
 
 
-wsClient.subscriptionClient.maxConnectTimeGenerator.duration = () => wsClient.subscriptionClient.maxConnectTimeGenerator.max;
-wsLink.subscriptionClient.maxConnectTimeGenerator.duration = () => wsLink.subscriptionClient.maxConnectTimeGenerator.max;
 
 
 // const wsLink = new WebSocketLink({
@@ -66,6 +64,10 @@ const link = split(
   wsLink,
   authLink.concat(httpLink)
 )
+
+
+link.subscriptionClient.maxConnectTimeGenerator.duration = () => link.subscriptionClient.maxConnectTimeGenerator.max
+
 
 const client = new ApolloClient({
   link,
