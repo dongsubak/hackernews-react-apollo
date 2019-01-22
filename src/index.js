@@ -13,6 +13,8 @@ import { setContext } from 'apollo-link-context'
 import { split } from 'apollo-link'
 import { WebSocketLink } from 'apollo-link-ws'
 import { getMainDefinition } from 'apollo-utilities'
+import { SubscriptionClient } from "subscriptions-transport-ws";
+
 
 
 const httpLink = createHttpLink({
@@ -29,7 +31,7 @@ const authLink = setContext((_,{ headers }) => {
   }
 })
 
-const wsLink = new WebSocketLink({
+const wsClient = new SubscriptionClient(
   uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
   options: {
     reconnect: true,
@@ -37,7 +39,20 @@ const wsLink = new WebSocketLink({
       authToken: localStorage.getItem(AUTH_TOKEN),
     }
   }
-})
+)
+
+const wsLink = new WebSocketLink(wsClient)
+
+
+// const wsLink = new WebSocketLink({
+//  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
+//  options: {
+//   reconnect: true,
+//    connectionParams: {
+//      authToken: localStorage.getItem(AUTH_TOKEN),
+//    }
+//  }
+//})
 
 const link = split(
   ({ query }) => {
