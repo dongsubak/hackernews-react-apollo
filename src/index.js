@@ -16,7 +16,7 @@ import { getMainDefinition } from 'apollo-utilities'
 
 
 const httpLink = createHttpLink({
-  uri: 'https://hackernews-react-apollo-serve.herokuapp.com:4000/'
+  uri: 'http://hackernews-react-apollo-serve.herokuapp.com:4000'
 })
 
 const authLink = setContext((_,{ headers }) => {
@@ -30,7 +30,7 @@ const authLink = setContext((_,{ headers }) => {
 })
 
 const wsLink = new WebSocketLink({
-  uri: `ws://hackernews-react-apollo-serve.herokuapp.com:4000/`,
+  uri: `ws://hackernews-react-apollo-serve.herokuapp.com:4000`,
   options: {
     reconnect: true,
     connectionParams: {
