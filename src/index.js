@@ -41,7 +41,11 @@ const wsClient = new SubscriptionClient({
   }
 })
 
-const wsLink = new WebSocketLink(wsClient)
+const wsLink = new WebSocketLink(wsClient);
+
+
+wsClient.subscriptionClient.maxConnectTimeGenerator.duration = () => wsClient.subscriptionClient.maxConnectTimeGenerator.max;
+wsLink.subscriptionClient.maxConnectTimeGenerator.duration = () => wsLink.subscriptionClient.maxConnectTimeGenerator.max;
 
 
 // const wsLink = new WebSocketLink({
