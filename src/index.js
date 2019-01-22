@@ -31,7 +31,7 @@ const authLink = setContext((_,{ headers }) => {
   }
 })
 
-const wsClient = new SubscriptionClient(
+const wsClient = new SubscriptionClient({
   uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
   options: {
     reconnect: true,
@@ -39,7 +39,7 @@ const wsClient = new SubscriptionClient(
       authToken: localStorage.getItem(AUTH_TOKEN),
     }
   }
-)
+})
 
 const wsLink = new WebSocketLink(wsClient)
 
