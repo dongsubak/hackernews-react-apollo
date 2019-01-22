@@ -43,9 +43,6 @@ const wsClient = new SubscriptionClient({
 
 const wsLink = new WebSocketLink(wsClient);
 
-
-
-
 // const wsLink = new WebSocketLink({
 //  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
 //  options: {
@@ -64,10 +61,6 @@ const link = split(
   wsLink,
   authLink.concat(httpLink)
 )
-
-
-link.subscriptionClient.maxConnectTimeGenerator.duration = () => link.subscriptionClient.maxConnectTimeGenerator.max
-
 
 const client = new ApolloClient({
   link,
