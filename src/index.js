@@ -30,7 +30,7 @@ const authLink = setContext((_,{ headers }) => {
 })
 
 const wsLink = new WebSocketLink({
-  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
+  uri: `ws://hackernews-react-apollo-serve.herokuapp.com:4000`,
   options: {
     reconnect: true,
     connectionParams: {
