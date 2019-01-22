@@ -16,7 +16,7 @@ import { getMainDefinition } from 'apollo-utilities'
 
 
 const httpLink = createHttpLink({
-  uri: 'http://hackernews-react-apollo-serve.herokuapp.com:4000'
+  uri: 'https://hackernews-react-apollo-serve.herokuapp.com:4000'
 })
 
 const authLink = setContext((_,{ headers }) => {
