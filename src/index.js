@@ -41,7 +41,7 @@ const wsClient = new SubscriptionClient({
   }
 })
 
-const wsLink = new WebSocketLink(wsClient);
+const wsLink = new WebSocketLink(wsClient)
 
 // const wsLink = new WebSocketLink({
 //  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
