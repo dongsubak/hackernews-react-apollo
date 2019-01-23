@@ -31,27 +31,27 @@ const authLink = setContext((_,{ headers }) => {
   }
 })
 
-const wsClient = new SubscriptionClient({
+//const wsClient = new SubscriptionClient({
+//  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
+ // options: {
+//    reconnect: true,
+ //   connectionParams: {
+ //     authToken: localStorage.getItem(AUTH_TOKEN),
+//    }
+//  }
+//})
+
+//const wsLink = new WebSocketLink(wsClient)
+
+const wsLink = new WebSocketLink({
   uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
   options: {
-    reconnect: true,
+   reconnect: true,
     connectionParams: {
       authToken: localStorage.getItem(AUTH_TOKEN),
     }
   }
 })
-
-const wsLink = new WebSocketLink(wsClient)
-
-// const wsLink = new WebSocketLink({
-//  uri: `wss://hackernews-react-apollo-serve.herokuapp.com:4000`,
-//  options: {
-//   reconnect: true,
-//    connectionParams: {
-//      authToken: localStorage.getItem(AUTH_TOKEN),
-//    }
-//  }
-//})
 
 const link = split(
   ({ query }) => {
