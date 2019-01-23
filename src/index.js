@@ -53,6 +53,8 @@ const wsLink = new WebSocketLink({
   }
 })
 
+SubscriptionClient.maxConnectTimeGenerator.duration = () => SubscriptionClient.maxConnectTimeGenerator.max
+
 const link = split(
   ({ query }) => {
     const { kind, operation } = getMainDefinition(query)
